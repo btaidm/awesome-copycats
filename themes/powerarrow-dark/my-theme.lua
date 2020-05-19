@@ -18,7 +18,7 @@ local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-dark"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.master_width_factor                       = 0.75
-theme.font                                      = "xos4 Terminus 9"
+theme.font                                      = "Hack 9"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
@@ -105,7 +105,7 @@ local clock = awful.widget.watch(
 theme.cal = lain.widget.cal({
     attach_to = { clock },
     notification_preset = {
-        font = "xos4 Terminus 10",
+        font = "Hack 10",
         fg   = theme.fg_normal,
         bg   = theme.bg_normal
     }
@@ -197,7 +197,7 @@ local fsicon = wibox.widget.imagebox(theme.widget_hdd)
 -- commented because it needs Gio/Glib >= 2.54
 theme.fs = lain.widget.fs({
     options  = "--exclude-type=tmpfs",
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
+    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "Hack 10" },
     settings = function()
         widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
     end

@@ -231,27 +231,27 @@ globalkeys = my_table.join(
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),
     -- Tag browsing
-    awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
-              {description = "view previous", group = "tag"}),
-    awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
-              {description = "view next", group = "tag"}),
+    -- awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
+    --           {description = "view previous", group = "tag"}),
+    -- awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
+    --           {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
 
     -- Non-empty tag browsing
-    awful.key({ altkey, "Shift" }, "Left", function () lain.util.tag_view_nonempty(-1) end,
+    awful.key({ modkey, "Shift" }, "Left", function () lain.util.tag_view_nonempty(-1) end,
               {description = "view  previous nonempty", group = "tag"}),
-    awful.key({ altkey, "Shift" }, "Right", function () lain.util.tag_view_nonempty(1) end,
+    awful.key({ modkey, "Shift" }, "Right", function () lain.util.tag_view_nonempty(1) end,
               {description = "view  previous nonempty", group = "tag"}),
 
     -- Default client focus
-    awful.key({ altkey,           }, "j",
+    awful.key({ modkey, altkey }, "j",
         function ()
             awful.client.focus.byidx( 1)
         end,
         {description = "focus next by index", group = "client"}
     ),
-    awful.key({ altkey,           }, "k",
+    awful.key({ modkey, altkey }, "k",
         function ()
             awful.client.focus.byidx(-1)
         end,
@@ -376,8 +376,6 @@ globalkeys = my_table.join(
               {description = "dropdown application", group = "launcher"}),
 
     -- Widgets popups
-    awful.key({ altkey, }, "c", function () if beautiful.cal then beautiful.cal.show(7) end end,
-              {description = "show calendar", group = "widgets"}),
     awful.key({ altkey, }, "h", function () if beautiful.fs then beautiful.fs.show(7) end end,
               {description = "show filesystem", group = "widgets"}),
     awful.key({ altkey, }, "w", function () if beautiful.weather then beautiful.weather.show(7) end end,
@@ -390,37 +388,7 @@ globalkeys = my_table.join(
               {description = "-10%", group = "hotkeys"}),
 
     -- ALSA volume control
-    awful.key({ altkey }, "Up",
-        function ()
-            os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
-            beautiful.volume.update()
-        end,
-        {description = "volume up", group = "hotkeys"}),
-    awful.key({ altkey }, "Down",
-        function ()
-            os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
-            beautiful.volume.update()
-        end,
-        {description = "volume down", group = "hotkeys"}),
-    awful.key({ altkey }, "m",
-        function ()
-            os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
-            beautiful.volume.update()
-        end,
-        {description = "toggle mute", group = "hotkeys"}),
-    awful.key({ altkey, "Control" }, "m",
-        function ()
-            os.execute(string.format("amixer -q set %s 100%%", beautiful.volume.channel))
-            beautiful.volume.update()
-        end,
-        {description = "volume 100%", group = "hotkeys"}),
-    awful.key({ altkey, "Control" }, "0",
-        function ()
-            os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
-            beautiful.volume.update()
-        end,
-        {description = "volume 0%", group = "hotkeys"}),
-
+--[[
     -- MPD control
     awful.key({ altkey, "Control" }, "Up",
         function ()
@@ -459,13 +427,54 @@ globalkeys = my_table.join(
             naughty.notify(common)
         end,
         {description = "mpc on/off", group = "widgets"}),
+--]]
 
+    -- playerctl control
+    awful.key({}, "XF86AudioPlay",
+        function ()
+            os.execute("playerctl --player=playerctld play-pause")
+	end,
+	{ description = "play audio", group = "hotkeys" }
+    ),
+
+    awful.key({}, "XF86AudioNext",
+        function ()
+            os.execute("playerctl --player=playerctld next")
+	end,
+	{ description = "skip audio to next", group = "hotkeys" }
+    ),
+    
+
+    awful.key({}, "XF86AudioPrev",
+        function ()
+            os.execute("playerctl --player=playerctld previous")
+	end,
+	{ description = "skip audio to prev", group = "hotkeys" }
+    ),
+
+    awful.key({"Shift"}, "XF86AudioNext",
+        function ()
+            os.execute("playerctl --player=playerctld position 10+")
+	end,
+	{ description = "move audio forward 10 seconds", group = "hotkeys" }
+    ),
+    
+
+    awful.key({"Shift"}, "XF86AudioPrev",
+        function ()
+            os.execute("playerctl --player=playerctld position 10-")
+	end,
+	{ description = "skip audio to prev", group = "hotkeys" }
+    ),
+
+    awful.key({}, "XF86AudioStop",
+        function ()
+            os.execute("playerctl --player=playerctld stop")
+	end,
+	{ description = "stop audio", group = "hotkeys" }
+    ),
     -- Copy primary to clipboard (terminals to gtk)
-    awful.key({ modkey }, "c", function () awful.spawn.with_shell("xsel | xsel -i -b") end,
-              {description = "copy terminal to gtk", group = "hotkeys"}),
     -- Copy clipboard to primary (gtk to terminals)
-    awful.key({ modkey }, "v", function () awful.spawn.with_shell("xsel -b | xsel") end,
-              {description = "copy gtk to terminal", group = "hotkeys"}),
 
     -- User programs
     awful.key({ modkey }, "q", function () awful.spawn(browser) end,
@@ -664,7 +673,7 @@ awful.rules.rules = {
     { rule = { class = "Steam"}, properties = { tag = awful.util.tagnames[5] } },
     { rule = { class = "Steam", name = "Steam - News"}, properties = { floating = true } },
     { rule = { class = "Steam", name = "Friends"}, properties = { floating = true } },
-    { rule = { type = "dialog"}, properties = { floating = true }},
+    { rule = { type = "dialog"}, properties = { floating = true, focus = true }},
 }
 -- }}}
 
